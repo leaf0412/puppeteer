@@ -209,7 +209,9 @@ async function run(url, type, productDetailInfo) {
     await gotoNextPage(page, productDetailInfo)
     log(blue(`${type} 获取数据总条数`, productDetailInfo.length))
     await saveProductInfo(page, type, shuffleSort(productDetailInfo))
+    callback(null, `${type} 获取数据结束`)
   } catch (err) {
+    callback(err)
     log(red(err))
   } finally {
     await browser.close()
@@ -232,7 +234,7 @@ async function saveProductInfo(page, type, productDetailInfo) {
     )
     try {
       const productUrl = productDetailInfo[i].link
-      const productId = /\/dp\/(.*?)\//i.exec(productUrl)
+      const productId = /\/dp\/(.*?)\//i.exec(productUrl)[1]
       await page.goto(productUrl, waitGotoUrlOption)
       const productInfo = await page.evaluate(async () => {
         const sleep = (time = 1000) => {
