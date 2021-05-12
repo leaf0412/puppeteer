@@ -176,7 +176,7 @@ async function gotoNextPage(page, productDetailInfo) {
         (item) => item.href
       );
       await page.goto(nextPage, waitGotoUrlOption);
-      await page.waitForTimeout(getRandomInt({ min: 1000, max: 2500 }));
+      await page.waitForTimeout(getRandomInt({ min: 1000, max: 1500 }));
       await getProductsInfo(page, productDetailInfo);
     }
   } catch (err) {
@@ -285,27 +285,27 @@ async function saveProductInfo(page, type, productDetailInfo) {
           { productId }
         )
       );
-      await page.waitForTimeout(getRandomInt({ min: 1000, max: 2500 }));
+      await page.waitForTimeout(getRandomInt({ min: 1000, max: 1500 }));
     } catch (err) {
       log(red(err));
       continue;
     }
   }
   writeXls(productList, type)
-  await fs.appendFileSync(
-    `./${new Date().format('yyyy-MM-dd')}-${type}-product.js`,
-    JSON.stringify(productList),
-    {
-      encoding: 'utf8'
-    }
-  );
+  // await fs.appendFileSync(
+  //   `./${new Date().format('yyyy-MM-dd')}-${type}-product.js`,
+  //   JSON.stringify(productList),
+  //   {
+  //     encoding: 'utf8'
+  //   }
+  // );
 }
 
 const start = async () => {
   log(orange(`start spider`));
   _async.mapLimit(
-    categoryTotalInfo,
-    2,
+    shuffleSort(categoryTotalInfo),
+    3,
     (item, callback) => {
       run(item.link, item.name, [], callback);
     },
@@ -368,5 +368,5 @@ data.forEach((item) => {
     ],
     options
   );
-  fs.writeFileSync(`./${name}.xlsx`, buffer, { flag: 'w' });
+  fs.writeFileSync(`./xlsx/${new Date().format('yyyy-MM-dd')}${name}.xlsx`, buffer, { flag: 'w' });
 }
